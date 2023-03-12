@@ -7,18 +7,20 @@ import (
 	"github.com/tazya/go-hack-assembler/pkg/assembler"
 	"github.com/tazya/go-hack-assembler/pkg/parser"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 func main() {
 	var inputFilepath string
-	var outputFilepath string
+	var outputDirectory string
 
 	flag.StringVar(&inputFilepath, "fileIn", "", "a string var")
-	flag.StringVar(&outputFilepath, "fileOut", "", "a string var")
+	flag.StringVar(&outputDirectory, "dirOut", "", "a string var")
 	flag.Parse()
 
-	if inputFilepath == "" || outputFilepath == "" {
-		fmt.Println("Usage: go-hack-assembler -input=\"path/to/input.asm\" output=\"path/to/output\"")
+	if inputFilepath == "" || outputDirectory == "" {
+		fmt.Println("Usage: go-hack-assembler -fileIn=\"path/to/input.asm\" dirOut=\"path/to/output\"")
 		return
 	}
 
@@ -30,7 +32,11 @@ func main() {
 		return
 	}
 
-	writeFile(outputFilepath, assembler.Assemble(instructions))
+	fileNameWithoutExt, _, _ := strings.Cut(filepath.Base(inputFilepath), ".")
+
+	outputPath := outputDirectory + fileNameWithoutExt + ".hack"
+
+	writeFile(outputPath, assembler.Assemble(instructions))
 }
 
 func readFile(filepath string) []string {
