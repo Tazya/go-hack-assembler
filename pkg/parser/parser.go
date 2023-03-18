@@ -48,20 +48,24 @@ func parseLine(codeLine string) (instruction.Instruction, error) {
 	}
 
 	if strings.HasPrefix(preparedLine, "@") {
-		if symbol.Has(strings.TrimPrefix(preparedLine, "@")) {
+		value := strings.TrimPrefix(preparedLine, "@")
+
+		if utils.IsNumeric(value) {
+			i, err = instruction.NewInstructionA(preparedLine)
+
+			return i, err
+		}
+
+		if symbol.Has(value) {
 			i, err = symbol.Get(strings.TrimPrefix(preparedLine, "@"))
 		} else {
-			i, err = instruction.NewInstructionA(preparedLine)
+			return symbol.NewVariable(value)
 		}
 	} else {
 		i, err = instruction.NewInstructionC(preparedLine)
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return i, nil
+	return i, err
 }
 
 func passRegisterLabels(codeLines []string) ([]string, error) {

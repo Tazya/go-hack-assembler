@@ -1,6 +1,9 @@
 package symbol
 
-import "github.com/tazya/go-hack-assembler/pkg/instruction"
+import (
+	"github.com/tazya/go-hack-assembler/pkg/instruction"
+	"strconv"
+)
 
 var symbols = map[string]string{
 	"R0":     "@0",
@@ -28,6 +31,8 @@ var symbols = map[string]string{
 	"THAT":   "@4",
 }
 
+var variableInc = 16
+
 func Has(label string) bool {
 	_, isExists := symbols[label]
 
@@ -52,4 +57,18 @@ func Get(label string) (*instruction.A, error) {
 
 func Set(label string, a *instruction.A) {
 	symbols[label] = a.GetMnemonic()
+}
+
+func NewVariable(label string) (*instruction.A, error) {
+	a, err := instruction.NewInstructionA("@" + strconv.Itoa(variableInc))
+
+	if err != nil {
+		return nil, err
+	}
+
+	symbols[label] = a.GetMnemonic()
+
+	variableInc++
+
+	return a, nil
 }
