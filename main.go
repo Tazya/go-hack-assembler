@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/tazya/go-hack-assembler/pkg/assembler"
 	"github.com/tazya/go-hack-assembler/pkg/parser"
+	"github.com/tazya/go-hack-assembler/pkg/symbol_table"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,7 +26,10 @@ func main() {
 	}
 
 	codeLines := readFile(inputFilepath)
-	instructions, err := parser.ParseCode(codeLines)
+
+	st := symbol_table.New()
+	p := parser.New(st)
+	instructions, err := p.ParseCode(codeLines)
 
 	if err != nil {
 		fmt.Println(err)
@@ -37,6 +41,8 @@ func main() {
 	outputPath := outputDirectory + fileNameWithoutExt + ".hack"
 
 	writeFile(outputPath, assembler.Assemble(instructions))
+
+	fmt.Println("Successfully assembled! See your file:", outputPath)
 }
 
 func readFile(filepath string) []string {

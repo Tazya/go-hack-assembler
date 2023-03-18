@@ -1,11 +1,12 @@
 package symbol_table
 
 import (
+	"fmt"
 	"github.com/tazya/go-hack-assembler/pkg/instruction"
 	"strconv"
 )
 
-var symbols = map[string]string{
+var initSymbols = map[string]string{
 	"R0":     "@0",
 	"R1":     "@1",
 	"R2":     "@2",
@@ -31,16 +32,32 @@ var symbols = map[string]string{
 	"THAT":   "@4",
 }
 
-var variableInc = 16
+type SymbolTable struct {
+	symbols     map[string]string
+	variableInc int
+}
 
-func Has(label string) bool {
-	_, isExists := symbols[label]
+func New() *SymbolTable {
+	st := &SymbolTable{
+		symbols:     make(map[string]string, len(initSymbols)),
+		variableInc: 16,
+	}
+
+	for k, v := range initSymbols {
+		st.symbols[k] = v
+	}
+
+	return st
+}
+
+func (st *SymbolTable) Has(label string) bool {
+	_, isExists := st.symbols[label]
 
 	return isExists
 }
 
-func Get(label string) (*instruction.A, error) {
-	mnemonic, isExists := symbols[label]
+func (st *SymbolTable) Get(label string) (*instruction.A, error) {
+	mnemonic, isExists := st.symbols[label]
 
 	if !isExists {
 		return nil, nil
@@ -55,20 +72,33 @@ func Get(label string) (*instruction.A, error) {
 	return i, nil
 }
 
-func Set(label string, a *instruction.A) {
-	symbols[label] = a.GetMnemonic()
+func (st *SymbolTable) Set(label string, a *instruction.A) {
+	st.symbols[label] = a.GetMnemonic()
 }
 
-func NewVariable(label string) (*instruction.A, error) {
-	a, err := instruction.NewInstructionA("@" + strconv.Itoa(variableInc))
+func (st *SymbolTable) NewLabel(label string, lineNumber int) error {
+	instructionMnemonic := fmt.Sprintf("@%d", lineNumber)
+	a, err := instruction.NewInstructionA(instructionMnemonic)
+
+	if err != nil {
+		return err
+	}
+
+	st.Set(label, a)
+
+	return nil
+}
+
+func (st *SymbolTable) NewVariable(label string) (*instruction.A, error) {
+	a, err := instruction.NewInstructionA("@" + strconv.Itoa(st.variableInc))
 
 	if err != nil {
 		return nil, err
 	}
 
-	symbols[label] = a.GetMnemonic()
+	st.symbols[label] = a.GetMnemonic()
 
-	variableInc++
+	st.variableInc++
 
 	return a, nil
 }

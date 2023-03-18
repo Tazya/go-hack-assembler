@@ -11,10 +11,18 @@ var destRepresentations = map[string]string{
 	"M":   "001",
 	"D":   "010",
 	"DM":  "011",
+	"MD":  "011",
 	"A":   "100",
 	"AM":  "101",
+	"MA":  "101",
 	"AD":  "110",
+	"DA":  "110",
 	"ADM": "111",
+	"AMD": "111",
+	"DAM": "111",
+	"DMA": "111",
+	"MAD": "111",
+	"MDA": "111",
 }
 
 var compRepresentations = map[string]string{
@@ -30,7 +38,7 @@ var compRepresentations = map[string]string{
 	"-D":  "0001111",
 	"-A":  "0110011",
 	"-M":  "1110011",
-	"D+1": "0110011",
+	"D+1": "0011111",
 	"A+1": "0110111",
 	"M+1": "1110111",
 	"D-1": "0001110",
@@ -68,8 +76,8 @@ func (c *C) Assemble() string {
 	return fmt.Sprintf(
 		"%s11%s%s%s",
 		c.getOpcode(),
-		c.representDest(),
 		c.representComp(),
+		c.representDest(),
 		c.representJump(),
 	)
 }

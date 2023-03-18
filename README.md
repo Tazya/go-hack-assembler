@@ -19,7 +19,7 @@ go build -mod=vendor -o go-hack-assembler main.go
 3. Use:
 
 ```
- ./go-hack-assembler -fileIn="./input/add.asm" -dirOut="./output/" 
+ ./go-hack-assembler -fileIn="./examples/add.asm" -dirOut="./output/" 
 ```
 
 ## Examples
