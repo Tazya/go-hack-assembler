@@ -20,6 +20,10 @@ func (a *A) getOpcode() string {
 	return "0"
 }
 
+func (a *A) GetMnemonic() string {
+	return fmt.Sprintf("@%d", a.Value)
+}
+
 func NewInstructionA(codeLine string) (*A, error) {
 	i := &A{}
 	preparedLine := utils.RemoveComments(strings.TrimPrefix(codeLine, "@"))

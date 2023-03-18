@@ -20,4 +20,4 @@ M=1
 
 (END)
 @END
-0;JMP%
+0;JMP

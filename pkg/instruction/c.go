@@ -182,7 +182,7 @@ func (c *C) representJump() string {
 		return "000"
 	}
 
-	binary, _ := jumpRepresentations[c.Comp]
+	binary, _ := jumpRepresentations[c.Jump]
 
 	return binary
 }
