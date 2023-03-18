@@ -1,4 +1,4 @@
-package symbol
+package symbol_table
 
 import (
 	"github.com/tazya/go-hack-assembler/pkg/instruction"

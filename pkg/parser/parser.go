@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/tazya/go-hack-assembler/pkg/instruction"
-	"github.com/tazya/go-hack-assembler/pkg/symbol"
+	"github.com/tazya/go-hack-assembler/pkg/symbol_table"
 	"github.com/tazya/go-hack-assembler/pkg/utils"
 	"strings"
 )
@@ -56,10 +56,10 @@ func parseLine(codeLine string) (instruction.Instruction, error) {
 			return i, err
 		}
 
-		if symbol.Has(value) {
-			i, err = symbol.Get(strings.TrimPrefix(preparedLine, "@"))
+		if symbol_table.Has(value) {
+			i, err = symbol_table.Get(strings.TrimPrefix(preparedLine, "@"))
 		} else {
-			return symbol.NewVariable(value)
+			return symbol_table.NewVariable(value)
 		}
 	} else {
 		i, err = instruction.NewInstructionC(preparedLine)
@@ -88,7 +88,7 @@ func passRegisterLabels(codeLines []string) ([]string, error) {
 
 		labelName := strings.Trim(preparedLine, "()")
 
-		if !symbol.Has(labelName) {
+		if !symbol_table.Has(labelName) {
 			instructionMnemonic := fmt.Sprintf("@%d", currentLine)
 			a, err := instruction.NewInstructionA(instructionMnemonic)
 
@@ -98,7 +98,7 @@ func passRegisterLabels(codeLines []string) ([]string, error) {
 
 			codeLinesWithoutLabels = append(codeLinesWithoutLabels, "")
 
-			symbol.Set(labelName, a)
+			symbol_table.Set(labelName, a)
 		}
 	}
 
